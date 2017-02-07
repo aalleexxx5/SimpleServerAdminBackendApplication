@@ -9,17 +9,31 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 
+import javax.management.ObjectName;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 class SSABA{
     public static void main(String[] args) throws Exception {
 
-
+        TimerTask cpumonitorTask = new TimerTask() {
+            @Override
+            public void run() {
+                OperatingSystemMXBean osbean = ManagementFactory.getOperatingSystemMXBean();
+                double percentage = 100*osbean.getSystemLoadAverage();
+                Register.addCpuDataPoint((byte)percentage);
+            }
+        };
+        Timer cpumonitor = new Timer();
+        cpumonitor.scheduleAtFixedRate(cpumonitorTask,0,1000);
         Server server = new Server(8080);
 
 
@@ -46,6 +60,7 @@ class SSABA{
                 if (instance instanceof AbstractHandler){
                     ContextHandler contextHandler = new ContextHandler();
                     System.out.println(cls.getSimpleName());
+                    Register.registerWebapp(cls.getSimpleName());
                     contextHandler.setContextPath("/"+cls.getSimpleName().toLowerCase());
                     contextHandler.setHandler((AbstractHandler) instance);
                     contexts.addHandler(contextHandler);
@@ -62,6 +77,4 @@ class SSABA{
         }
         return contexts;
     }
-
-
 }
