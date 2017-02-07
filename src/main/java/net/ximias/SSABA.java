@@ -1,34 +1,29 @@
 package net.ximias;
 
-import net.ximias.handlers.GoodDayHandler;
-import net.ximias.handlers.HelloHandler;
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.ArrayList;
 
 class SSABA{
     public static void main(String[] args) throws Exception {
-
-
         Server server = new Server(8080);
-
-
         server.setHandler(createContextHandlers());
-
         server.start();
         server.join();
     }
 
+    /**
+     * Sets up webapps based on their fully qualified names from the webapps.txt file.
+     * The name of the class will be the URL extention Ex. a class named "HelloWorld"
+     * ends up at "example.com/helloworld" TODO make this modifiable
+     * @return the ContextHAndlerCollection containing all webappclasses named in the
+     * file "webapps.txt"
+     *
+     */
     static ContextHandlerCollection createContextHandlers(){
         ContextHandlerCollection contexts = new ContextHandlerCollection();
         File file = new File("webapps.txt");
@@ -41,8 +36,10 @@ class SSABA{
                 line = reader.readLine();
             }
             for (String webappName : webappsNames) {
+                //Dark arts V
                 Class<?> cls = Class.forName(webappName);
                 Object instance = cls.newInstance();
+                //More Dark arts ^
                 if (instance instanceof AbstractHandler){
                     ContextHandler contextHandler = new ContextHandler();
                     System.out.println(cls.getSimpleName());
