@@ -29,6 +29,8 @@ public class Register {
     }
 
     public static Byte[] getCpuData(int size){
+        //return new Byte[]{40,40,40,40,40,38,36,34,32,30,30,30,30,30,30,30,30,38,50,80,100,100,100,100,100,100,50,40,30,30,25,20,15,10,8,6,4,3,1,0};
+        if (size>cpuData.size()) size=cpuData.size();
         Byte[] ret = new Byte[size];
         for (int i = cpuData.size() - 1; i >= cpuData.size()-size; i--) {
             if (i<0) break;

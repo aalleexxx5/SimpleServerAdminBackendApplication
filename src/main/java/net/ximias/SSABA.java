@@ -43,6 +43,14 @@ class SSABA{
         server.join();
     }
 
+    /**
+     * Sets up webapps based on their fully qualified names from the webapps.txt file.
+     * The name of the class will be the URL extention Ex. a class named "HelloWorld"
+     * ends up at "example.com/helloworld" TODO make this modifiable
+     * @return the ContextHAndlerCollection containing all webappclasses named in the
+     * file "webapps.txt"
+     *
+     */
     static ContextHandlerCollection createContextHandlers(){
         ContextHandlerCollection contexts = new ContextHandlerCollection();
         File file = new File("webapps.txt");

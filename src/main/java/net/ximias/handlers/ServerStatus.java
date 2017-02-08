@@ -17,26 +17,55 @@ public class ServerStatus extends AbstractHandler {
     public void handle(String s, Request request, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException, ServletException {
         if (httpServletRequest.getPathInfo().equalsIgnoreCase("/cpugraphdata")){
             int dataSize;
+            request.setHandled(true);
             try{
                 dataSize = Integer.valueOf(httpServletRequest.getParameter("dataSize"));
             }catch (NumberFormatException e){
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                httpServletResponse.getWriter().print(-1);
                 return;
-            }catch (NullPointerException){
+            }catch (NullPointerException e){
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                httpServletResponse.getWriter().print(-1);
                 return;
             }
+            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
             getCpuGraphData(dataSize,httpServletResponse);
-            request.setHandled(true);
             return;
         }
-        httpServletResponse.setContentType("text/plain; charset=utf-8");
+        httpServletResponse.setContentType("text/html; charset=utf-8");
         httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-        httpServletResponse.getWriter().println(httpServletRequest.getPathInfo());
+        String res = "<head></head><body><h1>Server Status</h1><canvas id=\"cpu\" width=\"500\" height=\"300\"style=\"border:1px solid #000000;\">Browser too old</canvas>\n" +
+                "<script type=\"text/javascript\">var c = document.getElementById(\"cpu\");\n" +
+                "var ctx = c.getContext(\"2d\");\n" +
+                "setInterval(httpGetAsync(\"/serverstatus/cpugraphdata?dataSize=200\",draw),1000);\n" +
+                "function draw(text){\n" +
+                "    points = text.split(\",\");\n" +
+                "    for(var i=1;i<points.length-1;i++){\n" +
+                "        var yPA = c.height-(points[i-1]*c.height/100);\n" +
+                "        var yPB = c.height-(points[i]*c.height/100);\n" +
+                "\t\tctx.moveTo(i-1,yPA);\n" +
+                "        ctx.lineTo(i,yPB);\n" +
+                "        ctx.stroke();}}\n" +
+                "function httpGetAsync(theUrl, callback){\n" +
+                "    var xmlHttp = new XMLHttpRequest();\n" +
+                "    xmlHttp.onreadystatechange = function() { \n" +
+                "        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)\n" +
+                "            callback(xmlHttp.responseText);\n" +
+                "    }\n" +
+                "    xmlHttp.open(\"GET\", theUrl, true); // true for asynchronous \n" +
+                "    xmlHttp.send(null);}</script></body>";
+
+        httpServletResponse.getWriter().println(res);
         request.setHandled(true);
     }
 
-    private void getCpuGraphData(int n,HttpServletResponse httpServletResponse){
-        String ret;
+    private void getCpuGraphData(int n,HttpServletResponse httpServletResponse) throws IOException{
+        String ret="";
+        Byte[] data= Register.getCpuData(n);
+        for (Byte datum : data) {
+            ret+=datum+",";
+        }
+        httpServletResponse.getWriter().println(ret.substring(0,ret.length()-2));
     }
 }
