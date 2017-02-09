@@ -21,7 +21,7 @@ public class RunningApps extends AbstractHandler {
                 "<body><h1>Webapps:</h1>";
         response+="<table style=width:100%><br/><tr><th>Webapp</th></tr>";
         for (String appname : Register.getWebappNames()) {
-            response+="<tr><td><a href=\"/"+appname.toLowerCase()+"\">"+appname+"</a></td></tr>";
+            response+="<tr><td><a href=\"/admin/"+appname.toLowerCase()+"\">"+appname+"</a></td></tr>";
         }
         response+="</table></body>";
         httpServletResponse.getWriter().println(response);

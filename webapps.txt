@@ -3,3 +3,4 @@ net.ximias.handlers.GoodDayHandler
 net.ximias.handlers.RunningApps
 net.ximias.handlers.Upload
 net.ximias.handlers.ServerStatus
+net.ximias.handlers.UpdateCredentials

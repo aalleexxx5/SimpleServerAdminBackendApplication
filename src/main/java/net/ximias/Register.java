@@ -1,5 +1,6 @@
 package net.ximias;
 
+import java.io.*;
 import java.util.ArrayList;
 
 /**
@@ -7,8 +8,10 @@ import java.util.ArrayList;
  */
 public class Register {
     public static final int MAX_CPU_DATA_POINTS =86400;
+    private static String adminCredentials;
     private static ArrayList<String> webappNames=new ArrayList<String>();
     private static ArrayList<Byte> cpuData = new ArrayList<Byte>();
+    private static BufferedWriter writer;
     public static void registerWebapp(String name){
         webappNames.add(name);
     }
@@ -37,5 +40,49 @@ public class Register {
             ret[cpuData.size()-1-i]=cpuData.get(i);
         }
         return ret;
+    }
+
+    /**
+     * TODO: encrypt written file
+     * @param value
+     */
+    public static void updateAdminCredentials(String value){
+        adminCredentials = value;
+        try {
+            writer = new BufferedWriter(new FileWriter(new File("admin.txt")));
+            writer.write(value);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * TODO encrypt written file
+     * @return
+     */
+    public static String getAdminCredentials(){
+        if (adminCredentials!=null) return adminCredentials;
+        File passwordFile = new File("admin.txt");
+        if (passwordFile.exists()){
+            try {
+                BufferedReader reader = new BufferedReader(new FileReader(passwordFile));
+                adminCredentials=reader.readLine();
+                reader.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (adminCredentials!=null&&adminCredentials.length()>2) return adminCredentials;
+        }
+        try {
+            writer = new BufferedWriter(new FileWriter(passwordFile));
+            writer.write("YWRtaW46YWRtaW4=");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "YWRtaW46YWRtaW4=";
     }
 }

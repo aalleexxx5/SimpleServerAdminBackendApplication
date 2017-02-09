@@ -1,5 +1,6 @@
 package net.ximias;
 
+import net.ximias.handlers.Admin;
 import net.ximias.handlers.GoodDayHandler;
 import net.ximias.handlers.HelloHandler;
 import org.eclipse.jetty.server.Handler;
@@ -52,7 +53,7 @@ class SSABA{
      *
      */
     static ContextHandlerCollection createContextHandlers(){
-        ContextHandlerCollection contexts = new ContextHandlerCollection();
+        ContextHandlerCollection contexts = new Admin();
         File file = new File("webapps.txt");
         try{
             BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -62,6 +63,7 @@ class SSABA{
                 webappsNames.add(line);
                 line = reader.readLine();
             }
+            reader.close();
             for (String webappName : webappsNames) {
                 Class<?> cls = Class.forName(webappName);
                 Object instance = cls.newInstance();
@@ -69,7 +71,7 @@ class SSABA{
                     ContextHandler contextHandler = new ContextHandler();
                     System.out.println(cls.getSimpleName());
                     Register.registerWebapp(cls.getSimpleName());
-                    contextHandler.setContextPath("/"+cls.getSimpleName().toLowerCase());
+                    contextHandler.setContextPath("/admin/"+cls.getSimpleName().toLowerCase());
                     contextHandler.setHandler((AbstractHandler) instance);
                     contexts.addHandler(contextHandler);
                 }
