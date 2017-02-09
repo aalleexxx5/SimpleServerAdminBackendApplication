@@ -9,6 +9,8 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.util.resource.Resource;
 
 import javax.management.ObjectName;
 import javax.servlet.ServletException;
@@ -45,16 +47,29 @@ class SSABA{
     }
 
     /**
-     * Sets up webapps based on their fully qualified names from the webapps.txt file.
+     * Sets up webapps based on their fully qualified names from the adminwebapps.txt file.
      * The name of the class will be the URL extention Ex. a class named "HelloWorld"
      * ends up at "example.com/helloworld" TODO make this modifiable
      * @return the ContextHAndlerCollection containing all webappclasses named in the
-     * file "webapps.txt"
+     * file "adminwebapps.txt"
      *
      */
     static ContextHandlerCollection createContextHandlers(){
-        ContextHandlerCollection contexts = new Admin();
-        File file = new File("webapps.txt");
+        ContextHandlerCollection root = new ContextHandlerCollection();
+        ContextHandler serverContent = new ContextHandler();
+        File contentDir = new File("content");
+        serverContent.setBaseResource(Resource.newResource(contentDir));
+        serverContent.setContextPath("/");
+        serverContent.setHandler(new ResourceHandler());
+        root.addHandler(serverContent);
+
+        root.addHandler(addWebappsFromFile("adminwebapps.txt","/admin/",new Admin()));
+        root.addHandler(addWebappsFromFile("webapps","/app/",new ContextHandlerCollection()));
+        return root;
+    }
+
+    static ContextHandlerCollection addWebappsFromFile(String filename,String path,ContextHandlerCollection context){
+        File file = new File(filename);
         try{
             BufferedReader reader = new BufferedReader(new FileReader(file));
             ArrayList<String> webappsNames = new ArrayList<String>();
@@ -70,10 +85,10 @@ class SSABA{
                 if (instance instanceof AbstractHandler){
                     ContextHandler contextHandler = new ContextHandler();
                     System.out.println(cls.getSimpleName());
-                    Register.registerWebapp(cls.getSimpleName());
-                    contextHandler.setContextPath("/admin/"+cls.getSimpleName().toLowerCase());
+                    Register.registerWebapp(cls.getSimpleName(),path+cls.getSimpleName().toLowerCase());
+                    contextHandler.setContextPath(path+cls.getSimpleName().toLowerCase());
                     contextHandler.setHandler((AbstractHandler) instance);
-                    contexts.addHandler(contextHandler);
+                    context.addHandler(contextHandler);
                 }
             }
         }catch (IOException e){
@@ -85,6 +100,6 @@ class SSABA{
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return contexts;
+        return context;
     }
 }

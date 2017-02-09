@@ -1,6 +1,7 @@
 package net.ximias.handlers;
 
 import net.ximias.Register;
+import net.ximias.Webapp;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
@@ -20,8 +21,8 @@ public class RunningApps extends AbstractHandler {
                 "td, th{border: 1px solid #000000;text-align: left;padding: 8px;}</style></head>" +
                 "<body><h1>Webapps:</h1>";
         response+="<table style=width:100%><br/><tr><th>Webapp</th></tr>";
-        for (String appname : Register.getWebappNames()) {
-            response+="<tr><td><a href=\"/admin/"+appname.toLowerCase()+"\">"+appname+"</a></td></tr>";
+        for (Webapp webapp : Register.getWebapps()) {
+            response+="<tr><td><a href=\""+webapp.getPath()+"\">"+webapp.getName()+"</a></td></tr>";
         }
         response+="</table></body>";
         httpServletResponse.getWriter().println(response);

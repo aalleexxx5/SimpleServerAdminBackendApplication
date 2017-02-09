@@ -9,15 +9,15 @@ import java.util.ArrayList;
 public class Register {
     public static final int MAX_CPU_DATA_POINTS =86400;
     private static String adminCredentials;
-    private static ArrayList<String> webappNames=new ArrayList<String>();
+    private static ArrayList<Webapp> webapps =new ArrayList<Webapp>();
     private static ArrayList<Byte> cpuData = new ArrayList<Byte>();
     private static BufferedWriter writer;
-    public static void registerWebapp(String name){
-        webappNames.add(name);
+    public static void registerWebapp(String name,String path){
+        webapps.add(new Webapp(name,path));
     }
 
-    public static ArrayList<String> getWebappNames(){
-        return webappNames;
+    public static ArrayList<Webapp> getWebapps(){
+        return webapps;
     }
 
     public static void unregisterWebapp(){
@@ -85,4 +85,5 @@ public class Register {
         }
         return "YWRtaW46YWRtaW4=";
     }
+
 }

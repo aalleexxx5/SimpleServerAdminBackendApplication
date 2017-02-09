@@ -1,5 +1,3 @@
-net.ximias.handlers.HelloHandler
-net.ximias.handlers.GoodDayHandler
 net.ximias.handlers.RunningApps
 net.ximias.handlers.Upload
 net.ximias.handlers.ServerStatus
