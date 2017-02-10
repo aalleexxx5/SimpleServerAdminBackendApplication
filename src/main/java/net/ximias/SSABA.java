@@ -63,7 +63,15 @@ class SSABA{
         serverContent.setHandler(new ResourceHandler());
         root.addHandler(serverContent);
 
-        root.addHandler(addWebappsFromFile("adminwebapps.txt","/admin/",new Admin()));
+        ContextHandlerCollection admin = new Admin();
+        ContextHandler adminContent = new ContextHandler();
+        File adminDir = new File("admincontent");
+        adminContent.setBaseResource(Resource.newResource(adminDir));
+        adminContent.setContextPath("/admin/");
+        adminContent.setHandler(new ResourceHandler());
+        admin.addHandler(adminContent);
+
+        root.addHandler(addWebappsFromFile("adminwebapps.txt","/admin/",admin));
         root.addHandler(addWebappsFromFile("webapps","/app/",new ContextHandlerCollection()));
         return root;
     }

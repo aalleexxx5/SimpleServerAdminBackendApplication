@@ -25,7 +25,7 @@ public class Admin extends ContextHandlerCollection {
         }
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setHeader("WWW-Authenticate","Basic realm=\"admin login\"");
-        response.getWriter().println("Admin page");
+        response.getWriter().println("UNAUTHORIZED");
         baseRequest.setHandled(true);
     }
 }
