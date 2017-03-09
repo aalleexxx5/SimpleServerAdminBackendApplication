@@ -46,7 +46,9 @@ public class Upload extends AbstractHandler {
                         System.out.println(filepart.getContentType());
                         System.out.println(filepart.getSize());
                         File dest = new File("download/"+httpServletRequest.getParameter("fileLocation")+filepart.getSubmittedFileName());
+                        if (!dest.getParentFile().exists()) dest.getParentFile().mkdirs();
                         Files.copy(filepart.getInputStream(),dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        handleContent(dest);
                     }
                     httpServletResponse.getWriter().print("<h1>Success</h1>");
                 }
@@ -54,4 +56,22 @@ public class Upload extends AbstractHandler {
         }
         request.setHandled(true);
     }
+
+    void handleContent(File file){
+        try {
+            System.out.println(file.getPath());
+            if (file.getPath().contains("content")) {
+                if (file.getPath().contains("admin")) {
+                    Files.copy(file.toPath(), new File("admincontent/" + file.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+                } else {
+                    Files.copy(file.toPath(), new File("content/" + file.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+                }
+            }else{
+                throw new UnsupportedOperationException("Not implemented yet");
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -15,7 +15,8 @@ import java.io.IOException;
  */
 public class ServerStatus extends AbstractHandler {
     public void handle(String s, Request request, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException, ServletException {
-        if (httpServletRequest.getPathInfo().equalsIgnoreCase("/cpugraphdata")){
+        if (httpServletRequest.getParameter("dataSize")!=null){
+            System.out.println("ping");
             int dataSize;
             request.setHandled(true);
             try{
@@ -38,7 +39,7 @@ public class ServerStatus extends AbstractHandler {
         String res = "<head></head><body><h1>Server Status</h1><canvas id=\"cpu\" width=\"500\" height=\"300\"style=\"border:1px solid #000000;\">Browser too old</canvas>\n" +
                 "<script type=\"text/javascript\">var c = document.getElementById(\"cpu\");\n" +
                 "var ctx = c.getContext(\"2d\");\n" +
-                "setInterval(httpGetAsync(\"/serverstatus/cpugraphdata?dataSize=200\",draw),1000);\n" +
+                "setInterval(httpGetAsync(\"/admin/serverstatus?dataSize=200\",draw),1000);\n" +
                 "function draw(text){\n" +
                 "    points = text.split(\",\");\n" +
                 "    for(var i=1;i<points.length-1;i++){\n" +
@@ -62,10 +63,12 @@ public class ServerStatus extends AbstractHandler {
 
     private void getCpuGraphData(int n,HttpServletResponse httpServletResponse) throws IOException{
         String ret="";
+        httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+        httpServletResponse.setContentType("text/plain; charset=utf-8");
         Byte[] data= Register.getCpuData(n);
         for (Byte datum : data) {
             ret+=datum+",";
         }
-        httpServletResponse.getWriter().println(ret.substring(0,ret.length()-2));
+        httpServletResponse.getWriter().println(ret.substring(0,ret.length()-1));
     }
 }

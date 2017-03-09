@@ -8,6 +8,8 @@ import java.util.ArrayList;
  */
 public class Register {
     public static final int MAX_CPU_DATA_POINTS =86400;
+    public static final int HTTP_PORT = 8080;
+    public static final int SSL_PORT = 8081;
     private static String adminCredentials;
     private static ArrayList<Webapp> webapps =new ArrayList<Webapp>();
     private static ArrayList<Byte> cpuData = new ArrayList<Byte>();
@@ -32,13 +34,13 @@ public class Register {
     }
 
     public static Byte[] getCpuData(int size){
-        //return new Byte[]{40,40,40,40,40,38,36,34,32,30,30,30,30,30,30,30,30,38,50,80,100,100,100,100,100,100,50,40,30,30,25,20,15,10,8,6,4,3,1,0};
         if (size>cpuData.size()) size=cpuData.size();
         Byte[] ret = new Byte[size];
         for (int i = cpuData.size() - 1; i >= cpuData.size()-size; i--) {
             if (i<0) break;
             ret[cpuData.size()-1-i]=cpuData.get(i);
         }
+        //return new Byte[]{40,40,40,40,40,38,36,34,32,30,30,30,30,30,30,30,30,38,50,80,100,100,100,100,100,100,50,40,30,30,25,20,15,10,8,6,4,3,1,0};
         return ret;
     }
 

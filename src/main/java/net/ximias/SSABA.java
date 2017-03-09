@@ -3,16 +3,17 @@ package net.ximias;
 import net.ximias.handlers.Admin;
 import net.ximias.handlers.GoodDayHandler;
 import net.ximias.handlers.HelloHandler;
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.Server;
+import net.ximias.handlers.RootHandler;
+import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 import javax.management.ObjectName;
+import javax.security.auth.login.LoginContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +38,28 @@ class SSABA{
         };
         Timer cpumonitor = new Timer();
         cpumonitor.scheduleAtFixedRate(cpumonitorTask,0,1000);
-        Server server = new Server(8080);
+
+
+
+        Server server = new Server();
+
+        ServerConnector connector = new ServerConnector(server);
+        connector.setPort(Register.HTTP_PORT);
+
+        HttpConfiguration https = new HttpConfiguration();
+        https.addCustomizer(new SecureRequestCustomizer());
+
+        SslContextFactory sslContextFactory = new SslContextFactory();
+        //sslContextFactory.setKeyStorePath("keystore.jks");
+        sslContextFactory.setKeyStorePath("localhostkeystore.jks");
+        sslContextFactory.setKeyStorePassword("LOCALKeyword");
+        sslContextFactory.setKeyManagerPassword("LOCALKeyword");
+        //sslContextFactory.setKeyStorePassword("SSABAKeyword");
+        //sslContextFactory.setKeyManagerPassword("SSABAKeyword");
+
+        ServerConnector sslConnector = new ServerConnector(server, new SslConnectionFactory(sslContextFactory,"http/1.1"),new HttpConnectionFactory(https));
+        sslConnector.setPort(Register.SSL_PORT);
+        server.setConnectors(new Connector[] {connector,sslConnector});
 
 
         server.setHandler(createContextHandlers());
@@ -55,7 +77,7 @@ class SSABA{
      *
      */
     static ContextHandlerCollection createContextHandlers(){
-        ContextHandlerCollection root = new ContextHandlerCollection();
+        ContextHandlerCollection root = new RootHandler();
         ContextHandler serverContent = new ContextHandler();
         File contentDir = new File("content");
         serverContent.setBaseResource(Resource.newResource(contentDir));
