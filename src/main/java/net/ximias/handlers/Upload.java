@@ -10,7 +10,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
 import java.io.*;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Collection;
@@ -67,7 +72,28 @@ public class Upload extends AbstractHandler {
                     Files.copy(file.toPath(), new File("content/" + file.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
                 }
             }else{
-                throw new UnsupportedOperationException("Not implemented yet");
+                /*
+                JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+                if (compiler!=null){
+                    File root = new File("classes/");
+                    file.getParentFile().mkdirs();
+                    Files.write(file.toPath(), Files.readAllBytes(file.toPath()));
+                    if (compiler.run(null,null,null,sourceFile.getPath())!=0){
+                        return;//An error occurred!
+                    }
+                    URLClassLoader classLoader = new URLClassLoader(new URL[] {root.toURI().toURL()});
+                    try {
+                        Class<?> cls = Class.forName("test.Test", true, classLoader);
+                        System.out.println(sourceFile.getAbsoluteFile());
+                        Object instance = cls.newInstance();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (InstantiationException e) {
+                        e.printStackTrace();
+                    }
+                }*/
             }
         }catch (IOException e){
             e.printStackTrace();

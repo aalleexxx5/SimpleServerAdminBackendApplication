@@ -36,7 +36,7 @@ public class UpdateCredentials extends AbstractHandler{
             if (httpServletRequest.getParameter("user")!=null&&httpServletRequest.getParameter("password")!=null&&httpServletRequest.getParameter("repeatpassword")!=null){
                 if (httpServletRequest.getParameter("password").equals(httpServletRequest.getParameter("repeatpassword"))){
                     httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-                    httpServletResponse.getWriter().println("<head></head><body><h1>Password update successful</hi></body>");
+                    httpServletResponse.getWriter().println("<head></head><body><h1>Password update successful</h1></body>");
                     BASE64Encoder encoder = new BASE64Encoder();
                     String cred = httpServletRequest.getParameter("user")+":"+httpServletRequest.getParameter("password");
                     System.out.println(cred);
