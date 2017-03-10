@@ -3,3 +3,4 @@ net.ximias.handlers.Upload
 net.ximias.handlers.ServerStatus
 net.ximias.handlers.UpdateCredentials
 net.ximias.handlers.Delete
+net.ximias.handlers.Restart
