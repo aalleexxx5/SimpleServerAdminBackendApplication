@@ -1,2 +1,4 @@
 net.ximias.handlers.HelloHandler
 net.ximias.handlers.GoodDayHandler
+net.ximias.handlers.RandomColor
+net.ximias.handlers.ColorGuess
