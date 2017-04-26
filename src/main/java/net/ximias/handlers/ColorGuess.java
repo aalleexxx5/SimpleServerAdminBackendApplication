@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 
 /**
  * Created by Alex on 20/03/2017.
+ * Minigame app for guessing a colour of a webpage.
  */
 public class ColorGuess extends AbstractHandler {
     public void handle(String s, Request request, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException, ServletException {

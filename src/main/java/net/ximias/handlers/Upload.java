@@ -22,6 +22,7 @@ import java.util.Collection;
 
 /**
  * Created by Alex on 07/02/2017.
+ * Handler for upload of html and webapps.
  */
 public class Upload extends AbstractHandler {
     public void handle(String s, Request request, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException, ServletException {

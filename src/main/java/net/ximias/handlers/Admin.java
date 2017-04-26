@@ -11,6 +11,7 @@ import java.io.IOException;
 
 /**
  * Created by Alex on 08/02/2017.
+ * Handler for making sure the proper authentication is used.
  */
 public class Admin extends ContextHandlerCollection {
     @Override
@@ -24,7 +25,8 @@ public class Admin extends ContextHandlerCollection {
         } else {
             System.out.println(request.getHeader("Authorization"));
             if (!request.getHeader("Authorization").equals("Basic "+ Register.getAdminCredentials())) { //Authentication was invalid
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.setHeader("WWW-Authenticate","Basic realm=\"admin login\"");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().println("Access denied");
                 baseRequest.setHandled(true);
             } else { //request was valid:
